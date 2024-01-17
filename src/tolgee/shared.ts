@@ -1,5 +1,4 @@
-import { Tolgee, FormatSimple } from '@tolgee/web';
-import {InContextTools} from "@tolgee/web/tools";
+import {Tolgee, FormatSimple, DevTools, BrowserExtensionPlugin, DevBackend} from '@tolgee/web';
 
 export const ALL_LOCALES = ['en', 'de'];
 
@@ -20,14 +19,9 @@ export function TolgeeBase() {
     return (
         Tolgee()
             .use(FormatSimple())
-            // .use(DevTools())
-            .use(InContextTools({
-                credentials: {
-                    apiKey: apiKey,
-                    apiUrl: apiUrl,
-                    projectId: "4834",
-                }
-            }))
+            .use(DevTools())
+            .use(DevBackend())
+            .use(BrowserExtensionPlugin())
             // Preset shared settings
             .updateDefaults({
                 apiKey,
