@@ -1,69 +1,69 @@
-import { FormatIcu } from '@tolgee/format-icu';
-import { useRouter } from 'next/router';
-import {
-  NsFallback,
-  Tolgee,
-  TolgeeProvider,
-  getFallbackArray,
-  DevTools,
-  useTolgeeSSR,
-} from '@tolgee/react';
+import {FormatIcu} from '@tolgee/format-icu';
+import {useRouter} from 'next/router';
+import {getFallbackArray, NsFallback, Tolgee, TolgeeProvider, useTolgeeSSR,} from '@tolgee/react';
+import {InContextTools} from "@tolgee/web/tools";
 
 const apiKey = process.env.NEXT_PUBLIC_TOLGEE_API_KEY;
 const apiUrl = process.env.NEXT_PUBLIC_TOLGEE_API_URL;
 
 export const getServerLocales = async (
-  locale: string | undefined,
-  ns?: NsFallback
+    locale: string | undefined,
+    ns?: NsFallback
 ) => {
-  const namespaces = ['', ...getFallbackArray(ns)];
-  const result: Record<string, any> = {};
+    const namespaces = ['', ...getFallbackArray(ns)];
+    const result: Record<string, any> = {};
 
-  if (locale) {
-    for (const namespace of namespaces) {
-      if (namespace) {
-        result[`${locale}:${namespace}`] = (
-          await import(`../public/i18n/${namespace}/${locale}.json`)
-        ).default;
-      } else {
-        result[`${locale}`] = (
-          await import(`../public/i18n/${locale}.json`)
-        ).default;
-      }
+    if (locale) {
+        for (const namespace of namespaces) {
+            if (namespace) {
+                result[`${locale}:${namespace}`] = (
+                    await import(`../public/i18n/${namespace}/${locale}.json`)
+                ).default;
+            } else {
+                result[`${locale}`] = (
+                    await import(`../public/i18n/${locale}.json`)
+                ).default;
+            }
+        }
     }
-  }
 
-  return result;
+    return result;
 };
 
 type Props = {
-  locales: any;
+    locales: any;
 };
 
 const tolgee = Tolgee()
-  .use(FormatIcu())
-  .use(DevTools())
-  .init({
-    availableLanguages: ['en', 'cs'],
-    defaultLanguage: 'en',
-    apiKey: apiKey,
-    apiUrl: apiUrl,
-  });
+    .use(FormatIcu())
+    .use(InContextTools({
+        credentials: {
+            apiKey: apiKey,
+            apiUrl: apiUrl,
+            projectId: "4834",
+        }
+    }))
+    .init({
+        availableLanguages: ['en', 'cs'],
+        defaultLanguage: 'en',
+        apiKey: apiKey,
+        apiUrl: apiUrl,
+    });
 
 export const TolgeeNextProvider = ({
-  locales,
-  children,
-}: React.PropsWithChildren<Props>) => {
-  const router = useRouter();
-  const tolgeeSSR = useTolgeeSSR(tolgee, router.locale, locales);
+                                       locales,
+                                       children,
+                                   }: React.PropsWithChildren<Props>) => {
+    const router = useRouter();
+    const tolgeeSSR = useTolgeeSSR(tolgee, router.locale, locales);
 
-  return (
-    <TolgeeProvider
-      tolgee={tolgeeSSR}
-      fallback="Loading..."
-      options={{ useSuspense: true }}
-    >
-      {children}
-    </TolgeeProvider>
-  );
+    return (
+        <TolgeeProvider
+            tolgee={tolgeeSSR}
+            fallback="Loading..."
+            options={{useSuspense: true}}
+        >
+            {children}
+        </TolgeeProvider>
+    );
 };
