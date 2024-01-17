@@ -7,6 +7,8 @@ import { TolgeeNextProvider } from '@/tolgee/client';
 
 import { TranslationMethodsServer } from './TranslationMethodsServer';
 import { TranslationMethodsClient } from './TranslationMethodsClient';
+import React from "react";
+import {TranslationMethodsServerOnly} from "@/app/[locale]/translation-methods/TranslationMethodsServerOnly";
 
 export default async function AboutPage() {
     const locale = useLocale();
@@ -22,6 +24,7 @@ export default async function AboutPage() {
                 </Navbar>
                 <TranslationMethodsClient />
                 <TranslationMethodsServer />
+                <TranslationMethodsServerOnly />
             </main>
         </TolgeeNextProvider>
     );
