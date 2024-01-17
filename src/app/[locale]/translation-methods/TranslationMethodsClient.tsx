@@ -36,8 +36,8 @@ export const TranslationMethodsClient = () => {
               <T
                   keyName="this_is_a_key_with_tags"
                   params={{
-                      b: <b />,
-                      i: <i />,
+                      b: (content) => <b>{content}</b>,
+                      i: (content) => <i>{content}</i>,
                       key: 'value',
                   }}
               >
